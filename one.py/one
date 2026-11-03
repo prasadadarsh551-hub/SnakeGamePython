@@ -1,0 +1,97 @@
+#=====================================================================================
+# PS Number: 35
+# Project Title: Snake Game
+# Student Name: Adarsh Kumar Prasad 
+# ERP ID: RU-26-02948
+# Email: adarsh.prasad@rungta.org
+# section: BTECH(CSE) B2
+#======================================================================================
+
+
+snake = [(5, 5)]
+direction = (1, 0)
+
+food_list = [(7, 5), (0, 0)]
+food_index = 0
+food = food_list[food_index]
+
+score = 0
+game_over = False
+ate_food = False
+
+moves = input("Moves: ").upper().split(",")
+
+for key in moves:
+
+    key = key.strip()
+
+    if key not in ["R", "L", "U", "D"]:
+        print("Invalid key. Use R, L, U or D.")
+        continue
+
+    directions = {
+        "R": (1, 0),
+        "L": (-1, 0),
+        "U": (0, -1),
+        "D": (0, 1)
+    }
+
+    new_direction = directions[key]
+
+    if new_direction == (-direction[0], -direction[1]):
+        print("Reverse move not allowed. Snake continues Right.")
+        continue
+
+    direction = new_direction
+
+    head = (
+        snake[0][0] + direction[0],
+        snake[0][1] + direction[1]
+    )
+
+    # Wall collision
+    if head[0] < 0 or head[0] > 9 or head[1] < 0 or head[1] > 9:
+        print("Game Over! Wall hit at", head)
+        game_over = True
+        break
+
+    # Food check
+    if head == food:
+        snake.insert(0, head)
+        score += 10
+        ate_food = True
+
+        print("Food eaten at", food, "!")
+
+        food_index += 1
+
+        if food_index < len(food_list):
+            food = food_list[food_index]
+
+        print("Score:", score, "| Length:", len(snake),
+              "| Head:", head)
+
+    else:
+        # Self collision check
+        body = snake[:-1]
+
+        if head in body:
+            print("Game Over! Snake hit itself.")
+            game_over = True
+            break
+
+        snake.insert(0, head)
+        snake.pop()
+
+        if not ate_food:
+            print("Head:", head)
+        elif direction == (1, 0):
+            print("Head:", head)
+
+# Final output
+if game_over:
+    print("Final score:", score)
+
+elif ate_food and direction != (1, 0):
+    print("Snake:", snake)
+    print("Length:", len(snake), "| Head:", snake[0])
